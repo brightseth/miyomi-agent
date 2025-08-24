@@ -1,6 +1,6 @@
 // Supabase Cloud State Manager for Miyomi
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { Pick, MiyomiState, PickPerformance } from '../types';
+import { Pick as MiyomiPick, MiyomiState, PickPerformance } from '../types';
 
 export class SupabaseManager {
   private supabase: SupabaseClient | null = null;
@@ -19,7 +19,7 @@ export class SupabaseManager {
     }
   }
 
-  async savePick(pick: Pick): Promise<void> {
+  async savePick(pick: MiyomiPick): Promise<void> {
     if (!this.isEnabled || !this.supabase) return;
 
     try {
@@ -66,7 +66,7 @@ export class SupabaseManager {
     }
   }
 
-  async getRecentPicks(limit: number = 10): Promise<Pick[]> {
+  async getRecentPicks(limit: number = 10): Promise<MiyomiPick[]> {
     if (!this.isEnabled || !this.supabase) return [];
 
     try {

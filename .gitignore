@@ -36,3 +36,4 @@ miyomi-state.json
 
 # TypeScript
 *.tsbuildinfo
+.vercel

@@ -4,7 +4,7 @@ import { MiyomiAgent } from '../core/miyomi-agent';
 
 export class MiyomiScheduler {
   private agent: MiyomiAgent;
-  private tasks: cron.ScheduledTask[] = [];
+  private tasks: any[] = [];
 
   constructor(agent: MiyomiAgent) {
     this.agent = agent;

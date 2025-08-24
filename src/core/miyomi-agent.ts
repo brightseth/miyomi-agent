@@ -92,12 +92,16 @@ export class MiyomiAgent {
   private async generatePost(market: Market, analysis: MarketAnalysis): Promise<PostContent> {
     // Get personality components
     const opener = this.personality.getOpener();
-    const voice = this.personality.generateVoice(
-      market.question,
-      analysis.recommendation,
-      analysis.reasoning
-    );
-    const closer = this.personality.getCloser(analysis.recommendation);
+    const voice = analysis.recommendation !== 'SKIP' 
+      ? this.personality.generateVoice(
+        market.question,
+        analysis.recommendation,
+        analysis.reasoning
+      )
+      : '';
+    const closer = analysis.recommendation !== 'SKIP'
+      ? this.personality.getCloser(analysis.recommendation)
+      : '';
 
     // Use Claude to enhance the post with Miyomi's voice
     const enhancedPost = await this.enhanceWithClaude(

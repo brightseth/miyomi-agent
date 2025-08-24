@@ -132,7 +132,7 @@ export class MiyomiPersonalityEngine {
       `${position} gang where you at? Time to eat`,
       `Betting ${position} with the confidence of someone who ${this.getRandomActivity()}`,
       `${position} because I'm literally never wrong (except that one time)`,
-      `Full sending ${position}. If Im wrong Ill delete this (I wont)`,,
+      `Full sending ${position}. If Im wrong Ill delete this (I wont)`,
       `${position} locked in. The market will bend to my will`,
       `Taking ${position} because ${this.getChaoticReason()}`
     ];
