@@ -1,0 +1,588 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Eden Video Recipe Schema v1.0",
+  "description": "Canonical schema for agent-authored video creation through Eden",
+  "type": "object",
+  "properties": {
+    "recipe_id": {
+      "type": "string",
+      "pattern": "^eden\\.video_recipe\\.v[0-9]+\\.[0-9]+$",
+      "description": "Unique versioned recipe identifier"
+    },
+    "agent": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": ["miyomi", "solienne", "abraham", "ezra", "lyra", "nova", "sage", "echo", "custom"]
+        },
+        "preset": {
+          "type": "string",
+          "description": "Agent-specific preset name",
+          "examples": [
+            "daily_market_drop",
+            "exhibition_trailer", 
+            "prophetic_sermon",
+            "morning_meditation",
+            "breaking_analysis"
+          ]
+        },
+        "voice": {
+          "type": "object",
+          "properties": {
+            "tone": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "witty", "mischievous", "confident", "contemplative",
+                  "prophetic", "analytical", "provocative", "soothing",
+                  "urgent", "playful", "authoritative", "mysterious"
+                ]
+              }
+            },
+            "accent": {
+              "type": "string",
+              "examples": ["NYC", "British", "Neutral", "Southern", "Valley"]
+            },
+            "pacing": {
+              "type": "string",
+              "enum": ["rapid", "measured", "dynamic", "slow", "staccato"]
+            }
+          }
+        }
+      },
+      "required": ["name", "preset"]
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "duration": {
+          "type": "integer",
+          "minimum": 15,
+          "maximum": 180,
+          "description": "Duration in seconds"
+        },
+        "aspect_ratio": {
+          "type": "string",
+          "enum": ["16:9", "9:16", "1:1", "4:5"],
+          "default": "9:16"
+        },
+        "platform_targets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["twitter", "farcaster", "tiktok", "instagram", "youtube", "lens"]
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "monetization": {
+          "type": "object",
+          "properties": {
+            "affiliate_url": {
+              "type": "string",
+              "format": "uri"
+            },
+            "tracking_params": {
+              "type": "object"
+            },
+            "revenue_share": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            }
+          }
+        }
+      },
+      "required": ["title", "duration"]
+    },
+    "steps": {
+      "type": "object",
+      "properties": {
+        "1_narration": {
+          "type": "object",
+          "properties": {
+            "script": {
+              "type": "string",
+              "maxLength": 500,
+              "description": "Complete narration script"
+            },
+            "word_count": {
+              "type": "integer",
+              "minimum": 50,
+              "maximum": 300
+            },
+            "emotional_arc": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["hook", "setup", "tension", "climax", "resolution", "cta"]
+              }
+            },
+            "key_phrases": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Phrases to emphasize visually"
+            }
+          },
+          "required": ["script", "word_count"]
+        },
+        "2_segmentation": {
+          "type": "object",
+          "properties": {
+            "n_clips": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10
+            },
+            "segments": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "index": {
+                    "type": "integer"
+                  },
+                  "duration": {
+                    "type": "number"
+                  },
+                  "narration_snippet": {
+                    "type": "string"
+                  },
+                  "visual_focus": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": ["n_clips", "segments"]
+        },
+        "3_style_reference": {
+          "type": "object",
+          "properties": {
+            "primary_aesthetic": {
+              "type": "string",
+              "examples": [
+                "glitch finance",
+                "neon noir", 
+                "ethereal minimalism",
+                "cyberpunk markets",
+                "vaporwave data",
+                "brutalist geometry"
+              ]
+            },
+            "color_palette": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^#[0-9A-Fa-f]{6}$"
+              }
+            },
+            "visual_effects": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "glitch", "blur", "chromatic_aberration", "film_grain",
+                  "light_leaks", "particle_systems", "data_overlay",
+                  "holographic", "liquid", "fractal"
+                ]
+              }
+            },
+            "reference_artists": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": ["primary_aesthetic", "color_palette"]
+        },
+        "4_mood_board": {
+          "type": "object",
+          "description": "Visual coherence references",
+          "properties": {
+            "reference_images": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "weight": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                }
+              },
+              "minItems": 3,
+              "maxItems": 5
+            },
+            "visual_themes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "texture_preferences": {
+              "type": "string",
+              "enum": ["smooth", "grainy", "organic", "digital", "mixed"]
+            }
+          }
+        },
+        "5_element_references": {
+          "type": "object",
+          "properties": {
+            "characters": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "appearance_segments": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            },
+            "objects": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "environments": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "data_visualizations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["chart", "graph", "heatmap", "network", "flow"]
+                  },
+                  "data_source": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "6_keyframe_generation": {
+          "type": "object",
+          "properties": {
+            "keyframes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "timestamp": {
+                    "type": "number"
+                  },
+                  "visual_description": {
+                    "type": "string"
+                  },
+                  "camera_movement": {
+                    "type": "string",
+                    "enum": ["static", "pan", "zoom_in", "zoom_out", "dolly", "orbit", "shake"]
+                  },
+                  "transition_type": {
+                    "type": "string",
+                    "enum": ["cut", "fade", "dissolve", "wipe", "glitch", "morph"]
+                  }
+                }
+              }
+            }
+          },
+          "required": ["keyframes"]
+        },
+        "7_animation": {
+          "type": "object",
+          "properties": {
+            "model": {
+              "type": "string",
+              "enum": ["veo2", "gen3", "runway", "pika", "stable_video"],
+              "default": "veo2"
+            },
+            "motion_intensity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "consistency_weight": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "required": ["model"]
+        },
+        "8_voiceover": {
+          "type": "object",
+          "properties": {
+            "voice_model": {
+              "type": "string"
+            },
+            "emotion_mapping": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "segment": {
+                    "type": "integer"
+                  },
+                  "emotion": {
+                    "type": "string"
+                  },
+                  "intensity": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "9_audio_mix": {
+          "type": "object",
+          "properties": {
+            "music": {
+              "type": "object",
+              "properties": {
+                "genre": {
+                  "type": "string",
+                  "examples": ["trap", "ambient", "synthwave", "orchestral", "drill", "lofi"]
+                },
+                "energy_curve": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "volume_relative": {
+                  "type": "number",
+                  "default": -30,
+                  "description": "Volume relative to voiceover in dB"
+                }
+              }
+            },
+            "sfx": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "timestamp": {
+                    "type": "number"
+                  }
+                }
+              }
+            },
+            "ambient": {
+              "type": "string",
+              "examples": ["city", "nature", "digital", "market_floor", "none"]
+            }
+          }
+        },
+        "10_thumbnail": {
+          "type": "object",
+          "properties": {
+            "style": {
+              "type": "string",
+              "enum": ["poster", "collage", "minimal", "explosive", "mysterious"]
+            },
+            "primary_text": {
+              "type": "string"
+            },
+            "secondary_text": {
+              "type": "string"
+            },
+            "visual_hook": {
+              "type": "string",
+              "description": "Key visual element to grab attention"
+            }
+          }
+        },
+        "11_summary": {
+          "type": "object",
+          "properties": {
+            "premise": {
+              "type": "string"
+            },
+            "unique_angle": {
+              "type": "string"
+            },
+            "target_reaction": {
+              "type": "string",
+              "examples": ["FOMO", "curiosity", "excitement", "contemplation", "urgency"]
+            },
+            "success_metrics": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "1_narration",
+        "2_segmentation", 
+        "3_style_reference",
+        "6_keyframe_generation",
+        "7_animation"
+      ]
+    },
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "optional": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "constraints": {
+          "type": "object",
+          "properties": {
+            "max_generation_time": {
+              "type": "integer",
+              "description": "Maximum time in seconds for video generation"
+            },
+            "quality_threshold": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "budget_credits": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    },
+    "versioning": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "modified_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "parent_recipe": {
+          "type": "string",
+          "description": "ID of recipe this was forked from"
+        },
+        "changelog": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "version": {
+                "type": "string"
+              },
+              "date": {
+                "type": "string",
+                "format": "date"
+              },
+              "changes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "ab_testing": {
+      "type": "object",
+      "properties": {
+        "variant_id": {
+          "type": "string"
+        },
+        "test_parameters": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "control_recipe": {
+          "type": "string"
+        },
+        "performance_tracking": {
+          "type": "object",
+          "properties": {
+            "views": {
+              "type": "integer"
+            },
+            "engagement_rate": {
+              "type": "number"
+            },
+            "conversion_rate": {
+              "type": "number"
+            },
+            "revenue_generated": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": ["recipe_id", "agent", "metadata", "steps"],
+  "additionalProperties": false
+}

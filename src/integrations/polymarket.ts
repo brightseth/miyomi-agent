@@ -12,29 +12,38 @@ export class PolymarketClient {
   });
 
   async getActiveMarkets(limit: number = 50): Promise<Market[]> {
-    // For now, always use mock markets since Polymarket CLOB requires auth
-    console.log('Using mock markets for development');
-    return this.getMockMarkets();
-    
-    // Uncomment when you have Polymarket API access:
-    /*
     try {
+      // Try real Polymarket API first
+      console.log('Fetching real Polymarket data...');
       const response = await this.apiClient.get('/markets', {
         params: {
-          active: true,
-          closed: false,
-          limit,
-          order: 'volume24hr',
-          ascending: false
+          limit: limit * 3 // Get more to filter down to active ones
         }
       });
 
-      return this.transformMarkets(response.data);
+      console.log(`📊 Got ${response.data?.data?.length || 0} total markets from Polymarket`);
+      
+      // Filter for truly active markets that accept orders
+      const activeMarkets = (response.data?.data || [])
+        .filter(market => 
+          market.accepting_orders === true || 
+          (market.active === true && market.closed === false)
+        )
+        .slice(0, limit);
+
+      console.log(`✅ Found ${activeMarkets.length} active markets`);
+      
+      if (activeMarkets.length > 0) {
+        return this.transformMarkets({ data: activeMarkets });
+      } else {
+        console.log('🔄 No active markets found, using mock data');
+        return this.getMockMarkets();
+      }
+      
     } catch (error: any) {
-      console.log('Using mock markets (API call failed)');
+      console.log('🔄 Polymarket API failed, using mock data:', error.message);
       return this.getMockMarkets();
     }
-    */
   }
 
   async getMarketBySlug(slug: string): Promise<Market | null> {
@@ -96,8 +105,13 @@ export class PolymarketClient {
   }
 
   private transformMarkets(data: any): Market[] {
-    if (!data || !Array.isArray(data)) return [];
-    return data.map(market => this.transformMarket(market));
+    // Handle Polymarket API response format: {data: [...]}
+    const marketArray = data?.data || data;
+    if (!marketArray || !Array.isArray(marketArray)) return [];
+    
+    return marketArray
+      .filter(market => market.active && !market.closed) // Only truly active markets
+      .map(market => this.transformMarket(market));
   }
 
   private transformMarket(data: any): Market {

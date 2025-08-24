@@ -1,0 +1,11 @@
+# After creating signer in Neynar, add this to .env:
+
+FARCASTER_SIGNER_UUID=your-signer-uuid-here
+
+# Example:
+# FARCASTER_SIGNER_UUID=abcd1234-5678-90ef-ghij-klmnopqrstuv
+
+# Then test with:
+npm run test-farcaster
+
+# Should post Miyomi's first cast!

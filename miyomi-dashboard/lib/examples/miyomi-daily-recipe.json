@@ -1,0 +1,232 @@
+{
+  "recipe_id": "eden.video_recipe.v1.0",
+  "agent": {
+    "name": "miyomi",
+    "preset": "daily_market_drop",
+    "voice": {
+      "tone": ["witty", "mischievous", "confident"],
+      "accent": "NYC",
+      "pacing": "rapid"
+    }
+  },
+  "metadata": {
+    "title": "Miyomi's Daily Pick - Bitcoin to $150k",
+    "description": "NYC trader calls out the most underpriced bet in crypto markets",
+    "duration": 30,
+    "aspect_ratio": "9:16",
+    "platform_targets": ["tiktok", "twitter", "farcaster"],
+    "tags": ["bitcoin", "crypto", "predictions", "contrarian", "trading"],
+    "monetization": {
+      "affiliate_url": "https://polymarket.com/market/btc-150k?ref=miyomi&utm_source=daily_video&utm_date=2024-12-24",
+      "tracking_params": {
+        "utm_source": "daily_video",
+        "utm_medium": "tiktok",
+        "utm_campaign": "btc_150k",
+        "ref": "miyomi"
+      },
+      "revenue_share": 2.5
+    }
+  },
+  "steps": {
+    "1_narration": {
+      "script": "Okay NYC, today's pick is INSANE and y'all are sleeping on it. Bitcoin to $150k by end of 2025? I'm taking YES at 22¢. While everyone's bearish, whales are accumulating. Historical halving cycles don't lie. Market consensus is wrong AGAIN. I've got $10k on this. Who's with me? Link below to tail my trade. LFG! This is Miyomi from the LES, and if you're not in this, NGMI.",
+      "word_count": 72,
+      "emotional_arc": ["hook", "setup", "evidence", "climax", "cta"],
+      "key_phrases": ["22¢", "$150k", "NGMI", "LFG", "LES"]
+    },
+    "2_segmentation": {
+      "n_clips": 2,
+      "segments": [
+        {
+          "index": 1,
+          "duration": 15.0,
+          "narration_snippet": "Okay NYC, today's pick is INSANE... I'm taking YES at 22¢",
+          "visual_focus": "Hook and setup with market data"
+        },
+        {
+          "index": 2,
+          "duration": 15.0,
+          "narration_snippet": "Market consensus is wrong AGAIN... NGMI",
+          "visual_focus": "Position reveal and call to action"
+        }
+      ]
+    },
+    "3_style_reference": {
+      "primary_aesthetic": "glitch finance",
+      "color_palette": ["#FF00FF", "#00FFFF", "#1A1A1A", "#FFFFFF"],
+      "visual_effects": ["glitch", "data_overlay", "chromatic_aberration", "light_leaks"],
+      "reference_artists": ["Zach Lieberman", "Casey Reas", "Refik Anadol"]
+    },
+    "4_mood_board": {
+      "reference_images": [
+        {
+          "url": "https://i.imgur.com/neon-trader.jpg",
+          "description": "NYC rooftop with neon trading screens",
+          "weight": 0.4
+        },
+        {
+          "url": "https://i.imgur.com/glitch-data.jpg", 
+          "description": "Glitched financial data visualization",
+          "weight": 0.3
+        },
+        {
+          "url": "https://i.imgur.com/cyberpunk-portrait.jpg",
+          "description": "Portrait with holographic overlays",
+          "weight": 0.3
+        }
+      ],
+      "visual_themes": ["neon-lit trading floor", "holographic UI", "cyberpunk portraiture"],
+      "texture_preferences": "digital"
+    },
+    "5_element_references": {
+      "characters": [
+        {
+          "name": "Miyomi",
+          "description": "20-something woman, confident, leather jacket, sunglasses",
+          "appearance_segments": [1, 2]
+        }
+      ],
+      "objects": ["trading screens", "Bitcoin logo", "price charts", "order books"],
+      "environments": ["NYC rooftop", "holographic trading floor"],
+      "data_visualizations": [
+        {
+          "type": "chart",
+          "data_source": "bitcoin_price_history"
+        },
+        {
+          "type": "heatmap", 
+          "data_source": "market_sentiment"
+        }
+      ]
+    },
+    "6_keyframe_generation": {
+      "keyframes": [
+        {
+          "timestamp": 0.0,
+          "visual_description": "Miyomi on NYC rooftop, city lights behind, confident pose",
+          "camera_movement": "zoom_in",
+          "transition_type": "fade"
+        },
+        {
+          "timestamp": 5.0,
+          "visual_description": "Split screen - Miyomi left, Bitcoin chart right with 22¢ YES position highlighted",
+          "camera_movement": "static",
+          "transition_type": "glitch"
+        },
+        {
+          "timestamp": 10.0,
+          "visual_description": "Close-up of order book showing whale accumulation data",
+          "camera_movement": "pan",
+          "transition_type": "dissolve"
+        },
+        {
+          "timestamp": 18.0,
+          "visual_description": "Miyomi pointing at camera, neon '$10k POSITION' text overlay",
+          "camera_movement": "zoom_in",
+          "transition_type": "cut"
+        },
+        {
+          "timestamp": 25.0,
+          "visual_description": "QR code and affiliate link with pulsing neon border",
+          "camera_movement": "static",
+          "transition_type": "fade"
+        }
+      ]
+    },
+    "7_animation": {
+      "model": "veo2",
+      "motion_intensity": 0.7,
+      "consistency_weight": 0.8
+    },
+    "8_voiceover": {
+      "voice_model": "elevenlabs_bella",
+      "emotion_mapping": [
+        {
+          "segment": 1,
+          "emotion": "excited",
+          "intensity": 0.8
+        },
+        {
+          "segment": 2,
+          "emotion": "confident",
+          "intensity": 0.9
+        }
+      ]
+    },
+    "9_audio_mix": {
+      "music": {
+        "genre": "trap",
+        "energy_curve": [0.3, 0.7, 0.9, 0.6],
+        "volume_relative": -30
+      },
+      "sfx": [
+        {
+          "type": "market_bell",
+          "timestamp": 0.5
+        },
+        {
+          "type": "cash_register",
+          "timestamp": 18.0
+        },
+        {
+          "type": "notification_ding",
+          "timestamp": 25.0
+        }
+      ],
+      "ambient": "market_floor"
+    },
+    "10_thumbnail": {
+      "style": "explosive",
+      "primary_text": "BITCOIN $150K?!",
+      "secondary_text": "22¢ YES = FREE MONEY",
+      "visual_hook": "Miyomi with shocked expression, Bitcoin logo with upward arrow"
+    },
+    "11_summary": {
+      "premise": "NYC trader identifies massive contrarian opportunity in Bitcoin prediction market",
+      "unique_angle": "Whales accumulating while retail is bearish - classic setup",
+      "target_reaction": "FOMO",
+      "success_metrics": [
+        "click_through_rate > 4%",
+        "completion_rate > 65%",
+        "affiliate_conversions > 20"
+      ]
+    }
+  },
+  "parameters": {
+    "required": ["market_title", "position", "price", "reasoning"],
+    "optional": ["custom_hook", "affiliate_override", "music_genre"],
+    "constraints": {
+      "max_generation_time": 300,
+      "quality_threshold": 0.85,
+      "budget_credits": 50
+    }
+  },
+  "versioning": {
+    "schema_version": "1.0.0",
+    "created_at": "2024-12-24T12:00:00Z",
+    "modified_at": "2024-12-24T12:00:00Z",
+    "parent_recipe": null,
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2024-12-24",
+        "changes": [
+          "Initial Miyomi daily pick recipe",
+          "Optimized for 30-second TikTok format",
+          "Added affiliate tracking integration"
+        ]
+      }
+    ]
+  },
+  "ab_testing": {
+    "variant_id": "control",
+    "test_parameters": [],
+    "control_recipe": null,
+    "performance_tracking": {
+      "views": 0,
+      "engagement_rate": 0,
+      "conversion_rate": 0,
+      "revenue_generated": 0
+    }
+  }
+}

@@ -8,27 +8,33 @@ import {
   MarketAnalysis 
 } from '../types';
 import { PolymarketClient } from '../integrations/polymarket';
+import { MarketAggregator } from '../integrations/market-aggregator';
 import { MarketAnalyzer } from './market-analyzer';
 import { MiyomiPersonalityEngine } from '../personality/miyomi-personality';
 import { StateManager } from '../state/state-manager';
 import { SupabaseManager } from '../state/supabase-manager';
+import { FarcasterDirectClient } from '../integrations/farcaster-direct';
 
 export class MiyomiAgent {
   private anthropic: Anthropic;
   private polymarket: PolymarketClient;
+  private marketAggregator: MarketAggregator;
   private analyzer: MarketAnalyzer;
   private personality: MiyomiPersonalityEngine;
   private stateManager: StateManager;
   private supabaseManager: SupabaseManager;
+  private farcaster: FarcasterDirectClient;
   private state: MiyomiState;
 
   constructor(apiKey: string) {
     this.anthropic = new Anthropic({ apiKey });
     this.polymarket = new PolymarketClient();
+    this.marketAggregator = new MarketAggregator();
     this.analyzer = new MarketAnalyzer(this.polymarket);
     this.personality = new MiyomiPersonalityEngine();
     this.stateManager = new StateManager();
     this.supabaseManager = new SupabaseManager();
+    this.farcaster = new FarcasterDirectClient();
     this.state = this.stateManager.loadState();
   }
 
@@ -36,9 +42,9 @@ export class MiyomiAgent {
     console.log("🎭 Miyomi waking up for Chick's Pick...");
     
     try {
-      // Get trending markets
-      const markets = await this.polymarket.getTrendingMarkets();
-      console.log(`Found ${markets.length} markets`);
+      // Get trending markets from all sources
+      const markets = await this.marketAggregator.getTrendingMarkets(15);
+      console.log(`Found ${markets.length} markets across all platforms`);
       if (!markets || markets.length === 0) {
         console.log("No markets found, Miyomi is taking a nap");
         return null;
@@ -81,6 +87,13 @@ export class MiyomiAgent {
       this.state.pickHistory.push(pick);
       this.state.totalPicks++;
       this.stateManager.saveState(this.state);
+
+      // Post to Farcaster
+      console.log('📱 Posting to Farcaster...');
+      const castHash = await this.farcaster.postAsUser(pick.post);
+      if (castHash) {
+        console.log('✅ Posted to Farcaster:', `https://warpcast.com/miyomi/${castHash.slice(0, 10)}`);
+      }
 
       return pick;
     } catch (error) {

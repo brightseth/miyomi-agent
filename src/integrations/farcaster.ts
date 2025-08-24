@@ -11,7 +11,7 @@ export class FarcasterClient {
     this.signerUuid = process.env.FARCASTER_SIGNER_UUID || null;
     
     if (apiKey && this.signerUuid) {
-      this.client = new NeynarAPIClient(apiKey);
+      this.client = new NeynarAPIClient({ apiKey });
       this.isEnabled = true;
       console.log('🟣 Farcaster connected');
     } else {
@@ -95,8 +95,8 @@ export class FarcasterClient {
     if (!this.client) return null;
     
     try {
-      const response = await this.client.lookupUserByUsername(username);
-      return response.result.user;
+      const response = await this.client.lookupUserByUsername({ username });
+      return response.user;
     } catch (error) {
       console.error('Error fetching user profile:', error);
       return null;
@@ -116,19 +116,18 @@ export async function setupFarcasterSigner() {
     return;
   }
 
-  const client = new NeynarAPIClient(apiKey);
+  const client = new NeynarAPIClient({ apiKey });
   
   try {
     // This creates a signer that Miyomi can use to post
-    const signer = await client.createSigner({
-      // You'll need to provide Miyomi's Farcaster account details
-      // This is typically done through Neynar's dashboard
-    });
-    
-    console.log('Signer created:', signer);
-    console.log('Add this to your .env:');
-    console.log(`FARCASTER_SIGNER_UUID=${signer.signer_uuid}`);
+    // Note: Creating signers programmatically may require a paid Neynar plan
+    // It's often easier to create via the Neynar dashboard
+    console.log('To create a signer:');
+    console.log('1. Go to https://dev.neynar.com');
+    console.log('2. Find the Signers or Managed Signers section');
+    console.log('3. Create a new signer for @miyomi');
+    console.log('4. Copy the signer_uuid');
   } catch (error) {
-    console.error('Error creating signer:', error);
+    console.error('Error:', error);
   }
 }
