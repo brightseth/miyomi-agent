@@ -24,7 +24,7 @@ export class SupabaseManager {
 
     try {
       const { error } = await this.supabase
-        .from('picks')
+        .from('miyomi_picks')
         .insert({
           id: pick.id,
           timestamp: pick.timestamp,
@@ -49,7 +49,7 @@ export class SupabaseManager {
 
     try {
       const { error } = await this.supabase
-        .from('pick_performance')
+        .from('miyomi_performance')
         .upsert({
           pick_id: pickId,
           current_price: performance.currentPrice,
@@ -71,10 +71,10 @@ export class SupabaseManager {
 
     try {
       const { data, error } = await this.supabase
-        .from('picks')
+        .from('miyomi_picks')
         .select(`
           *,
-          pick_performance (*)
+          miyomi_performance (*)
         `)
         .order('timestamp', { ascending: false })
         .limit(limit);
@@ -91,12 +91,12 @@ export class SupabaseManager {
         consensusPrice: row.consensus_price,
         miyomiPrice: row.miyomi_price,
         post: row.post,
-        performance: row.pick_performance ? {
-          currentPrice: row.pick_performance.current_price,
-          pnl: row.pick_performance.pnl,
-          pnlPercent: row.pick_performance.pnl_percent,
-          status: row.pick_performance.status,
-          lastUpdated: new Date(row.pick_performance.last_updated)
+        performance: row.miyomi_performance ? {
+          currentPrice: row.miyomi_performance.current_price,
+          pnl: row.miyomi_performance.pnl,
+          pnlPercent: row.miyomi_performance.pnl_percent,
+          status: row.miyomi_performance.status,
+          lastUpdated: new Date(row.miyomi_performance.last_updated)
         } : undefined
       }));
     } catch (error) {
@@ -110,7 +110,7 @@ export class SupabaseManager {
 
     try {
       const { error } = await this.supabase
-        .from('personality_state')
+        .from('miyomi_personality')
         .upsert({
           id: 1, // Single row for current state
           mood: state.personality.mood,
@@ -133,19 +133,19 @@ export class SupabaseManager {
     try {
       // Get total picks and win rate
       const { data: picks, error: picksError } = await this.supabase
-        .from('picks')
-        .select('*, pick_performance(status)');
+        .from('miyomi_picks')
+        .select('*, miyomi_performance(status)');
 
       if (picksError) throw picksError;
 
       const totalPicks = picks.length;
-      const wins = picks.filter(p => p.pick_performance?.status === 'winning').length;
+      const wins = picks.filter(p => p.miyomi_performance?.status === 'winning').length;
       const winRate = totalPicks > 0 ? (wins / totalPicks) * 100 : 0;
 
       // Get best performing pick
       const { data: bestPick, error: bestError } = await this.supabase
-        .from('pick_performance')
-        .select('*, picks(*)')
+        .from('miyomi_performance')
+        .select('*, miyomi_picks(*)')
         .order('pnl_percent', { ascending: false })
         .limit(1)
         .single();
@@ -156,7 +156,7 @@ export class SupabaseManager {
         totalPicks,
         wins,
         winRate: winRate.toFixed(1),
-        bestPick: bestPick?.picks
+        bestPick: bestPick?.miyomi_picks
       };
     } catch (error) {
       console.error('Error getting stats from Supabase:', error);

@@ -1,0 +1,10 @@
+# ADD THESE TO YOUR .env FILE:
+
+# From your existing Supabase project (Settings → API)
+SUPABASE_URL=https://YOUR-PROJECT-ID.supabase.co
+SUPABASE_SERVICE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...your-service-role-key
+
+# Make up a random secret for Vercel cron jobs
+CRON_SECRET=make-this-a-long-random-string-like-x9k2m5p8q3w7n1v4b6
+
+# Your Anthropic key is already set ✅

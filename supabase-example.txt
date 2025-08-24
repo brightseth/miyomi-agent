@@ -1,0 +1,8 @@
+# Add these to your .env file after creating Supabase project:
+
+# Supabase Configuration (get from Settings → API)
+SUPABASE_URL=https://YOUR-PROJECT-ID.supabase.co
+SUPABASE_SERVICE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...your-service-role-key-here
+
+# For Vercel Cron Jobs (make up a random string)
+CRON_SECRET=your-random-secret-here-make-it-long-and-random
