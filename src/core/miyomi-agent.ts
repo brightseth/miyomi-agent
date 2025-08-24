@@ -38,6 +38,7 @@ export class MiyomiAgent {
     try {
       // Get trending markets
       const markets = await this.polymarket.getTrendingMarkets();
+      console.log(`Found ${markets.length} markets`);
       if (!markets || markets.length === 0) {
         console.log("No markets found, Miyomi is taking a nap");
         return null;

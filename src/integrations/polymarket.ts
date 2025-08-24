@@ -12,8 +12,13 @@ export class PolymarketClient {
   });
 
   async getActiveMarkets(limit: number = 50): Promise<Market[]> {
+    // For now, always use mock markets since Polymarket CLOB requires auth
+    console.log('Using mock markets for development');
+    return this.getMockMarkets();
+    
+    // Uncomment when you have Polymarket API access:
+    /*
     try {
-      // Get markets sorted by volume
       const response = await this.apiClient.get('/markets', {
         params: {
           active: true,
@@ -25,11 +30,11 @@ export class PolymarketClient {
       });
 
       return this.transformMarkets(response.data);
-    } catch (error) {
-      console.error('Error fetching markets:', error);
-      // Fallback to mock data for development
+    } catch (error: any) {
+      console.log('Using mock markets (API call failed)');
       return this.getMockMarkets();
     }
+    */
   }
 
   async getMarketBySlug(slug: string): Promise<Market | null> {
@@ -64,9 +69,16 @@ export class PolymarketClient {
   }
 
   async getTrendingMarkets(): Promise<Market[]> {
+    console.log('Getting trending markets...');
     try {
       // Get markets with high recent volume changes
       const markets = await this.getActiveMarkets(100);
+      console.log(`Got ${markets.length} markets from getActiveMarkets`);
+      
+      // If we got mock markets, just return them
+      if (markets.length <= 3) {
+        return markets;
+      }
       
       // Sort by volume momentum (24hr volume vs total volume ratio)
       return markets
