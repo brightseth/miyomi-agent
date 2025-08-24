@@ -1,0 +1,30 @@
+{
+  "name": "miyomi-agent",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "test": "tsx src/index.ts test",
+    "run": "tsx src/index.ts run",
+    "schedule": "tsx src/index.ts schedule",
+    "stats": "tsx src/index.ts stats"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.60.0",
+    "@supabase/supabase-js": "^2.56.0",
+    "@types/node": "^24.3.0",
+    "@types/node-cron": "^3.0.11",
+    "@vercel/node": "^5.3.13",
+    "axios": "^1.11.0",
+    "dotenv": "^17.2.1",
+    "node-cron": "^4.2.1",
+    "tsx": "^4.20.4",
+    "typescript": "^5.9.2"
+  }
+}
