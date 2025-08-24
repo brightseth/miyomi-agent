@@ -387,17 +387,6 @@ Data says the opposite of what everyone believes
                 </div>
               </div>
             </div>
-            
-            {/* CTA Button */}
-            <div className="text-right">
-              <Link 
-                href="/m/latest"
-                className="inline-block px-6 py-3 bg-gradient-to-r from-pink-600 to-cyan-600 rounded-lg font-bold hover:from-pink-500 hover:to-cyan-500 transition"
-              >
-                Today&apos;s Pick →
-              </Link>
-              <div className="mt-2 text-xs text-gray-500">NOON EST DAILY</div>
-            </div>
           </div>
         </div>
       </div>
