@@ -358,7 +358,13 @@ export function generateMiyomiContent(
 }
 
 // Generate a full day's content schedule
-export function generateDailyContent(markets: any[]) {
+export function generateDailyContent(markets: Array<{
+  title: string;
+  position: 'YES' | 'NO';
+  currentOdds: number;
+  volume: number;
+  momentum?: number;
+}>) {
   const topPick = markets[0];
   const schedule = [];
 
