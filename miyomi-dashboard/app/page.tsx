@@ -191,30 +191,49 @@ Data says the opposite of what everyone believes
     }
   };
 
-  // Mock data - in production, fetch from API
+  // Fetch real market data
   useEffect(() => {
     // Fetch uploaded media
     fetchMedia();
     
-    // Mock markets
-    setMarkets([
-      {
-        marketId: 'will-bitcoin-btc-reach-200000-by-december-31-2025',
-        marketTitle: 'Bitcoin to $200k by Dec 2025?',
-        position: 'NO',
-        price: 9,
-        volume: 125000,
-        momentum: 0.92
-      },
-      {
-        marketId: 'will-there-be-a-us-recession-in-2025',
-        marketTitle: 'Will there be a US recession in 2025?',
-        position: 'NO',
-        price: 65,
-        volume: 87000,
-        momentum: 0.75
+    // Fetch real markets from API
+    const fetchMarkets = async () => {
+      try {
+        const response = await fetch('/api/markets?type=contrarian');
+        const data = await response.json();
+        
+        if (data.success && data.data?.topOpportunities) {
+          const formattedMarkets = data.data.topOpportunities.slice(0, 6).map((m: any) => ({
+            marketId: m.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+            marketTitle: m.title,
+            position: m.position,
+            price: m.currentPrice,
+            volume: m.score * 1000000, // Convert score back to volume estimate
+            momentum: m.score
+          }));
+          setMarkets(formattedMarkets);
+        }
+      } catch (error) {
+        console.error('Failed to fetch markets:', error);
+        // Fallback to some default markets
+        setMarkets([
+          {
+            marketId: 'btc-200k-2025',
+            marketTitle: 'Bitcoin to $200k by Dec 2025?',
+            position: 'NO',
+            price: 12,
+            volume: 1250000,
+            momentum: 0.88
+          }
+        ]);
       }
-    ]);
+    };
+    
+    fetchMarkets();
+    // Refresh markets every 5 minutes
+    const interval = setInterval(fetchMarkets, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
 
     // Mock casts
     setCasts([

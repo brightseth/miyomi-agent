@@ -1,171 +1,165 @@
 import { NextResponse } from 'next/server';
+import { findContrarianPicks, getTrendingMarkets, getClosingSoonMarkets } from '@/lib/market-data';
 
-// API route to fetch market opportunities
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    // Fetch directly from Polymarket API server-side
-    const response = await fetch('https://clob.polymarket.com/markets?limit=50', {
-      headers: {
-        'Accept': 'application/json',
-        'User-Agent': 'Mozilla/5.0'
-      }
+    const { searchParams } = new URL(request.url);
+    const type = searchParams.get('type') || 'contrarian';
+    
+    let markets;
+    let formattedData;
+    
+    switch (type) {
+      case 'trending':
+        markets = await getTrendingMarkets();
+        formattedData = {
+          totalMarkets: markets.length,
+          totalOpportunities: markets.length,
+          topOpportunities: markets.map(m => ({
+            title: m.title,
+            source: m.source,
+            position: m.outcomes[0].price > 70 ? 'NO' : m.outcomes[0].price < 30 ? 'YES' : 'YES',
+            currentPrice: Math.round(m.outcomes[0].price),
+            score: m.volume / 1000000, // Volume in millions as score
+            delta24h: (Math.random() - 0.5) * 10,
+            timeToClose: m.endDate ? Math.round((new Date(m.endDate).getTime() - Date.now()) / (1000 * 60 * 60)) : 720,
+            reasoning: [
+              `Volume: $${(m.volume / 1000).toFixed(0)}k`,
+              `Current consensus: ${Math.round(m.outcomes[0].price)}% YES / ${Math.round(m.outcomes[1].price)}% NO`,
+              'High activity market'
+            ],
+            url: m.url
+          }))
+        };
+        break;
+        
+      case 'closing':
+        markets = await getClosingSoonMarkets();
+        formattedData = {
+          totalMarkets: markets.length,
+          totalOpportunities: markets.length,
+          topOpportunities: markets.map(m => ({
+            title: m.title,
+            source: m.source,
+            position: m.outcomes[0].price > 70 ? 'NO' : m.outcomes[0].price < 30 ? 'YES' : 'YES',
+            currentPrice: Math.round(m.outcomes[0].price),
+            score: 0.8, // High score for closing soon
+            delta24h: (Math.random() - 0.5) * 10,
+            timeToClose: m.endDate ? Math.round((new Date(m.endDate).getTime() - Date.now()) / (1000 * 60 * 60)) : 24,
+            reasoning: [
+              'Market closing soon',
+              `Current consensus: ${Math.round(m.outcomes[0].price)}% YES / ${Math.round(m.outcomes[1].price)}% NO`,
+              `Closes in ${m.endDate ? Math.round((new Date(m.endDate).getTime() - Date.now()) / (1000 * 60 * 60)) : 24} hours`
+            ],
+            url: m.url
+          }))
+        };
+        break;
+        
+      case 'contrarian':
+      default:
+        const picks = await findContrarianPicks();
+        formattedData = {
+          totalMarkets: picks.length,
+          totalOpportunities: picks.filter(p => p.contrarian_score > 70).length,
+          topOpportunities: picks.map(pick => ({
+            title: pick.marketTitle,
+            source: 'polymarket',
+            position: pick.position,
+            currentPrice: pick.price,
+            score: pick.contrarian_score / 100,
+            delta24h: (Math.random() - 0.5) * 10,
+            timeToClose: 720, // Default 30 days
+            reasoning: [
+              pick.reasoning || `${Math.round(pick.contrarian_score)}% consensus against us`,
+              `Taking ${pick.position} at ${pick.price}¢`,
+              pick.volume > 100000 ? `Volume: $${(pick.volume / 1000).toFixed(0)}k` : 'Low volume opportunity'
+            ],
+            url: '#'
+          }))
+        };
+        break;
+    }
+    
+    // Return formatted response
+    const response = NextResponse.json({
+      success: true,
+      data: formattedData,
+      timestamp: new Date().toISOString(),
+      type
     });
-    
-    if (!response.ok) {
-      throw new Error(`Polymarket API error: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    const markets = [];
-    
-    // Process Polymarket data
-    for (const m of data.data || []) {
-      // Skip closed or inactive markets
-      if (m.closed === true) continue;
-      if (m.active === false) continue;
-      
-      const yesPrice = m.tokens?.[0]?.price ? Math.round(m.tokens[0].price * 100) : 50;
-      const noPrice = m.tokens?.[1]?.price ? Math.round(m.tokens[1].price * 100) : 50;
-      
-      // Skip if prices are too extreme (likely resolved)
-      if (yesPrice >= 99 || yesPrice <= 1) continue;
-      
-      // Calculate contrarian position
-      const position = yesPrice > 70 ? 'NO' : yesPrice < 30 ? 'YES' : yesPrice > 55 ? 'NO' : 'YES';
-      const currentPrice = position === 'YES' ? yesPrice : noPrice;
-      
-      // Score based on price extremity and volume
-      const priceScore = Math.abs(50 - yesPrice) / 50;
-      const volumeScore = Math.min(1, (m.volume_24hr || 0) / 50000);
-      const score = (priceScore * 0.7 + volumeScore * 0.3);
-      
-      // Calculate time to close
-      let timeToClose = 720; // Default 30 days if no end date
-      if (m.end_date_iso) {
-        timeToClose = Math.round((new Date(m.end_date_iso).getTime() - Date.now()) / (1000 * 60 * 60));
-        // Skip if already closed or closing too far in future
-        if (timeToClose < 0 || timeToClose > 8760) continue;
-      }
-      
-      markets.push({
-        title: m.question || m.description || 'Unknown Market',
-        source: 'polymarket',
-        position,
-        currentPrice,
-        score,
-        delta24h: (Math.random() - 0.5) * 10,
-        timeToClose,
-        reasoning: [
-          position === 'YES' && yesPrice < 30 ? 'Market heavily bearish - contrarian long' : 
-          position === 'NO' && yesPrice > 70 ? 'Market overly bullish - contrarian short' : 
-          'Price inefficiency detected',
-          `Current consensus: ${yesPrice}% YES / ${noPrice}% NO`,
-          m.volume_24hr ? `Volume: $${(m.volume_24hr / 1000).toFixed(0)}k in 24h` : 'Low volume opportunity'
-        ],
-        url: `https://polymarket.com/event/${m.market_slug || m.condition_id}`
-      });
-    }
-    
-    // If still no markets, add some trending ones
-    if (markets.length === 0) {
-      markets.push({
-        title: "Will Bitcoin reach $150,000 by end of 2025?",
-        source: 'polymarket',
-        position: 'YES',
-        currentPrice: 22,
-        score: 0.65,
-        delta24h: -3.5,
-        timeToClose: 3400,
-        reasoning: [
-          'Market heavily bearish - contrarian long',
-          'Current consensus: 22% YES / 78% NO',
-          'Historical halving cycles suggest upside'
-        ],
-        url: 'https://polymarket.com'
-      });
-      
-      markets.push({
-        title: "Will there be a US recession in 2025?",
-        source: 'polymarket',
-        position: 'NO',
-        currentPrice: 65,
-        score: 0.55,
-        delta24h: 2.1,
-        timeToClose: 4200,
-        reasoning: [
-          'Market overly pessimistic',
-          'Current consensus: 65% YES / 35% NO', 
-          'Economic indicators improving'
-        ],
-        url: 'https://polymarket.com'
-      });
-    }
-    
-    // Sort by score
-    markets.sort((a, b) => b.score - a.score);
     
     // Add CORS headers for local development
-    const successResponse = NextResponse.json({
-      success: true,
-      data: {
-        totalMarkets: markets.length,
-        totalOpportunities: markets.filter(m => m.score > 0.3).length,
-        topOpportunities: markets.slice(0, 10)
-      }
-    });
+    response.headers.set('Access-Control-Allow-Origin', '*');
+    response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    response.headers.set('Cache-Control', 'public, s-maxage=300'); // Cache for 5 minutes
     
-    successResponse.headers.set('Access-Control-Allow-Origin', '*');
-    successResponse.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    
-    return successResponse;
+    return response;
     
   } catch (error) {
-    console.error('Market API error:', error);
+    console.error('Markets API error:', error);
     
-    // Return fallback markets on error
-    const errorResponse = NextResponse.json({
+    // Return mock data as fallback
+    const fallbackResponse = NextResponse.json({
       success: true,
       data: {
-        totalMarkets: 2,
-        totalOpportunities: 2,
+        totalMarkets: 3,
+        totalOpportunities: 3,
         topOpportunities: [
+          {
+            title: "Will Bitcoin reach $200k by December 2025?",
+            source: 'polymarket',
+            position: 'NO',
+            currentPrice: 12,
+            score: 0.88,
+            delta24h: -2.5,
+            timeToClose: 8760,
+            reasoning: [
+              '88% are wrong about this. Data doesn\'t lie.',
+              'Taking NO at 12¢',
+              'Volume: $1,250k'
+            ],
+            url: 'https://polymarket.com'
+          },
+          {
+            title: "Will the US enter recession in 2025?",
+            source: 'polymarket',
+            position: 'YES',
+            currentPrice: 25,
+            score: 0.75,
+            delta24h: 1.8,
+            timeToClose: 8760,
+            reasoning: [
+              'Consensus trapped in groupthink. Taking YES here.',
+              'Taking YES at 25¢',
+              'Volume: $890k'
+            ],
+            url: 'https://polymarket.com'
+          },
           {
             title: "Will AI replace 10% of jobs by 2026?",
             source: 'polymarket',
             position: 'YES',
             currentPrice: 35,
-            score: 0.6,
+            score: 0.65,
             delta24h: -1.5,
-            timeToClose: 5000,
+            timeToClose: 13140,
             reasoning: [
-              'Market underestimating AI progress',
-              'Current consensus: 35% YES / 65% NO',
-              'Recent breakthroughs accelerating timeline'
-            ],
-            url: 'https://polymarket.com'
-          },
-          {
-            title: "Will SpaceX land on Mars before 2030?",
-            source: 'polymarket',
-            position: 'NO',
-            currentPrice: 72,
-            score: 0.5,
-            delta24h: 3.2,
-            timeToClose: 6000,
-            reasoning: [
-              'Market too optimistic on timeline',
-              'Current consensus: 72% YES / 28% NO',
-              'Technical challenges remain significant'
+              'Market sleeping on this. YES is free money.',
+              'Taking YES at 35¢',
+              'Volume: $450k'
             ],
             url: 'https://polymarket.com'
           }
         ]
-      }
+      },
+      timestamp: new Date().toISOString(),
+      type: 'fallback'
     });
     
-    errorResponse.headers.set('Access-Control-Allow-Origin', '*');
-    errorResponse.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    fallbackResponse.headers.set('Access-Control-Allow-Origin', '*');
+    fallbackResponse.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
     
-    return errorResponse;
+    return fallbackResponse;
   }
 }
