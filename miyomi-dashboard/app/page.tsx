@@ -203,7 +203,7 @@ Data says the opposite of what everyone believes
         const data = await response.json();
         
         if (data.success && data.data?.topOpportunities) {
-          const formattedMarkets = data.data.topOpportunities.slice(0, 6).map((m: any) => ({
+          const formattedMarkets = data.data.topOpportunities.slice(0, 6).map((m: Record<string, unknown>) => ({
             marketId: m.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
             marketTitle: m.title,
             position: m.position,

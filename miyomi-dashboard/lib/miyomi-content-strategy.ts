@@ -109,7 +109,7 @@ export const CONTENT_TEMPLATES = {
       slide1: 'Result/Question',
       slide2: 'Odds chart over time',
       slide3: 'What moved the market',
-      slide4: 'Miyomi's position + reasoning',
+      slide4: 'Miyomi position + reasoning',
       slide5: 'CTA: Link in bio to trade'
     },
     reel: 'Same as TikTok but with IG-specific captions'
