@@ -235,6 +235,8 @@ Data says the opposite of what everyone believes
     return () => clearInterval(interval);
   }, []);
 
+  // Mock data for casts and videos
+  useEffect(() => {
     // Mock casts
     setCasts([
       {
