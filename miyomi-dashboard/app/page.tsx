@@ -321,14 +321,14 @@ Data says the opposite of what everyone believes
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Navigation Bar */}
-      <div className="border-b border-gray-800 bg-black/50 backdrop-blur fixed top-0 left-0 right-0 z-50">
+      <div className="border-b border-gray-800 bg-black fixed top-0 left-0 right-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-end">
           {/* Toggle Switch */}
           <div className="flex items-center gap-3">
-            <span className={`flex items-center gap-1 text-sm font-medium transition ${
-              viewMode === 'public' ? 'text-pink-400' : 'text-gray-500'
+            <span className={`text-sm font-medium transition ${
+              viewMode === 'public' ? 'text-white' : 'text-gray-500'
             }`}>
-              <span className="text-base">👁️</span> Public
+              Public
             </span>
             <button
               onClick={() => {
@@ -340,43 +340,32 @@ Data says the opposite of what everyone believes
                   setActiveTab('vitals');
                 }
               }}
-              className="relative inline-flex h-8 w-16 items-center rounded-full transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-black hover:scale-105"
-              style={{
-                backgroundColor: viewMode === 'private' ? '#9333ea' : '#ec4899'
-              }}
+              className="relative inline-flex h-7 w-14 items-center rounded-full transition-all duration-200 bg-gray-700"
               aria-label="Toggle between public and trainer mode"
             >
               <span className="sr-only">Toggle mode</span>
               <span
-                className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-all duration-300 ease-in-out ${
-                  viewMode === 'private' ? 'translate-x-9' : 'translate-x-1'
+                className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-200 ${
+                  viewMode === 'private' ? 'translate-x-8' : 'translate-x-1'
                 }`}
-              >
-                <span className="flex h-full w-full items-center justify-center text-xs">
-                  {viewMode === 'private' ? '🔧' : '👤'}
-                </span>
-              </span>
+              />
             </button>
-            <span className={`flex items-center gap-1 text-sm font-medium transition ${
-              viewMode === 'private' ? 'text-purple-400' : 'text-gray-500'
+            <span className={`text-sm font-medium transition ${
+              viewMode === 'private' ? 'text-white' : 'text-gray-500'
             }`}>
-              <span className="text-base">🔒</span> Trainer
+              Trainer
             </span>
           </div>
         </div>
       </div>
 
       {/* Hero Section */}
-      <div className="relative h-96 bg-gradient-to-br from-pink-900/20 via-black to-cyan-900/20 mt-14">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
-        
-        <div className="relative max-w-6xl mx-auto px-4 pt-20">
+      <div className="bg-gray-950 border-b border-gray-800 mt-14">
+        <div className="max-w-6xl mx-auto px-4 py-12">
           <div className="flex items-start gap-8">
             {/* Profile Image */}
-            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-pink-500 to-cyan-500 p-1">
-              <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-4xl font-bold">
-                M
-              </div>
+            <div className="w-24 h-24 rounded-full bg-gray-800 flex items-center justify-center text-3xl font-bold">
+              M
             </div>
             
             {/* Profile Info */}
@@ -391,19 +380,19 @@ Data says the opposite of what everyone believes
               {/* Stats Bar */}
               <div className="flex gap-8 flex-wrap">
                 <div>
-                  <div className="text-2xl font-bold text-pink-400">{stats.winRate}%</div>
+                  <div className="text-2xl font-bold">{stats.winRate}%</div>
                   <div className="text-sm text-gray-500">Win Rate</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-green-400">+{stats.avgReturn}¢</div>
+                  <div className="text-2xl font-bold">+{stats.avgReturn}¢</div>
                   <div className="text-sm text-gray-500">Avg Return</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-blue-400">{stats.followers.toLocaleString()}</div>
+                  <div className="text-2xl font-bold">{stats.followers.toLocaleString()}</div>
                   <div className="text-sm text-gray-500">Followers</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-yellow-400">{stats.accuracy}%</div>
+                  <div className="text-2xl font-bold">{stats.accuracy}%</div>
                   <div className="text-sm text-gray-500">Accuracy</div>
                 </div>
               </div>
@@ -425,8 +414,8 @@ Data says the opposite of what everyone believes
                 onClick={() => setActiveTab(tab)}
                 className={`py-4 px-2 border-b-2 transition ${
                   activeTab === tab 
-                    ? 'border-pink-500 text-pink-400' 
-                    : 'border-transparent text-gray-400 hover:text-white'
+                    ? 'border-white text-white' 
+                    : 'border-transparent text-gray-500 hover:text-gray-300'
                 }`}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -442,8 +431,8 @@ Data says the opposite of what everyone believes
         {activeTab === 'vitals' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
-              <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
-                <h3 className="text-xl font-bold mb-4 text-pink-400">The Origin Story</h3>
+              <div className="bg-gray-900 border border-gray-800 rounded p-6">
+                <h3 className="text-xl font-bold mb-4">The Origin Story</h3>
                 <p className="text-gray-300 leading-relaxed">
                   Started trading at 19 with $500 from bartending in Chinatown. Lost it all in 3 days. 
                   That pain taught me everything - the market is a psychological battlefield where consensus 
@@ -451,8 +440,8 @@ Data says the opposite of what everyone believes
                 </p>
               </div>
               
-              <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
-                <h3 className="text-xl font-bold mb-4 text-cyan-400">Trading Philosophy</h3>
+              <div className="bg-gray-900 border border-gray-800 rounded p-6">
+                <h3 className="text-xl font-bold mb-4">Trading Philosophy</h3>
                 <ul className="space-y-2 text-gray-300">
                   <li>• Consensus is a contrarian indicator</li>
                   <li>• Data &gt; narrative, always</li>
@@ -464,8 +453,8 @@ Data says the opposite of what everyone believes
             </div>
             
             <div className="space-y-6">
-              <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
-                <h3 className="text-xl font-bold mb-4 text-yellow-400">Daily Routine</h3>
+              <div className="bg-gray-900 border border-gray-800 rounded p-6">
+                <h3 className="text-xl font-bold mb-4">Daily Routine</h3>
                 <div className="space-y-3 text-gray-300">
                   <div className="flex justify-between">
                     <span>5:00 AM</span>
@@ -481,7 +470,7 @@ Data says the opposite of what everyone believes
                   </div>
                   <div className="flex justify-between">
                     <span>12:00 PM</span>
-                    <span className="text-pink-400 font-bold">DAILY PICK DROPS</span>
+                    <span className="font-bold">DAILY PICK DROPS</span>
                   </div>
                   <div className="flex justify-between">
                     <span>2:00 PM</span>
@@ -490,16 +479,16 @@ Data says the opposite of what everyone believes
                 </div>
               </div>
               
-              <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
-                <h3 className="text-xl font-bold mb-4 text-green-400">Track Record</h3>
+              <div className="bg-gray-900 border border-gray-800 rounded p-6">
+                <h3 className="text-xl font-bold mb-4">Track Record</h3>
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-gray-400">Best Trade</span>
-                    <span className="text-green-400">+892% (Trump at 8¢)</span>
+                    <span className="text-white">+892% (Trump at 8¢)</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Worst Trade</span>
-                    <span className="text-red-400">-67% (GME squeeze)</span>
+                    <span className="text-gray-400">-67% (GME squeeze)</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Avg Hold Time</span>
@@ -646,8 +635,8 @@ Data says the opposite of what everyone believes
         {/* Dashboard Tab (Private View Only) */}
         {activeTab === 'dashboard' && viewMode === 'private' && (
           <div className="space-y-6">
-            <div className="bg-gray-900 border border-purple-800 rounded-lg p-6">
-              <h2 className="text-2xl font-bold mb-4 text-purple-400">🎯 Daily Video Production</h2>
+            <div className="bg-gray-900 border border-gray-800 rounded p-6">
+              <h2 className="text-xl font-bold mb-4">Daily Video Production</h2>
               
               {/* Market Selection */}
               <div className="mb-6">
@@ -659,8 +648,8 @@ Data says the opposite of what everyone believes
                       onClick={() => setSelectedMarket(market)}
                       className={`p-4 rounded-lg border text-left transition-all ${
                         selectedMarket?.marketId === market.marketId
-                          ? 'border-pink-500 bg-pink-950/30'
-                          : 'border-gray-700 bg-gray-800/50 hover:border-gray-600'
+                          ? 'border-white bg-gray-800'
+                          : 'border-gray-700 bg-gray-900 hover:border-gray-600'
                       }`}
                     >
                       <div className="font-semibold text-sm mb-1">{market.marketTitle}</div>
@@ -685,9 +674,9 @@ Data says the opposite of what everyone believes
               <button
                 onClick={generateAll}
                 disabled={!selectedMarket || isGenerating}
-                className="w-full py-4 mb-6 bg-gradient-to-r from-pink-600 to-cyan-600 rounded-lg font-bold text-lg hover:from-pink-500 hover:to-cyan-500 disabled:from-gray-700 disabled:to-gray-700 transition-all shadow-lg"
+                className="w-full py-3 mb-6 bg-white text-black rounded font-bold hover:bg-gray-200 disabled:bg-gray-700 disabled:text-gray-500 transition"
               >
-                {isGenerating ? '⚡ Generating Everything...' : '🚀 Generate Script + Eden Prompt + Link'}
+                {isGenerating ? 'Generating...' : 'Generate Script + Eden Prompt + Link'}
               </button>
 
               {/* Generated Content Grid */}
